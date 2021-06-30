@@ -7,9 +7,9 @@ After=network-online.target
 [Service]
 User={{ mongodb_user }}
 {% if mongodb_use_numa | bool %}
-ExecStart=/usr/bin/numactl --interleave=all /usr/bin/mongod --config /etc/mongod.conf
+ExecStart=/usr/bin/numactl --interleave=all /usr/bin/mongod --config "{{ mongodb_conf_dir }}/mongod.conf"
 {% else %}
-ExecStart=/usr/bin/mongod --config /etc/mongod.conf
+ExecStart=/usr/bin/mongod --config "{{ mongodb_conf_dir }}/mongod.conf"
 {% endif %}
 # file size
 LimitFSIZE=infinity

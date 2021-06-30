@@ -56,6 +56,8 @@ mongodb_user: "{{ 'mongod' if ('RedHat' == ansible_os_family) else 'mongodb' }}"
 mongodb_uid:
 mongodb_gid:
 mongodb_daemon_name: "{{ 'mongod' if ('mongodb-org' in mongodb_package) else 'mongodb' }}"
+## conf
+mongodb_conf_dir: "/etc/mongodb"
 ## net Options
 mongodb_net_bindip: 127.0.0.1 # Comma separated list of ip addresses to listen on
 mongodb_net_http_enabled: false # Enable http interface
@@ -69,7 +71,7 @@ mongodb_processmanagement_fork: false # Fork server process
 ## security Options
 # Disable or enable security. Possible values: 'disabled', 'enabled'
 mongodb_security_authorization: "disabled"
-mongodb_security_keyfile: /etc/mongodb-keyfile # Specify path to keyfile with password for inter-process authentication
+mongodb_security_keyfile: "{{ mongodb_conf_dir }}/mongodb-keyfile" # Specify path to keyfile with password for inter-process authentication
 
 ## storage Options
 mongodb_storage_dbpath: /data/db # Directory for datafiles
@@ -94,9 +96,6 @@ mongodb_wiredtiger_cache_size: 1 # Cache size for wiredTiger in GB
 mongodb_systemlog_destination: "file"
 mongodb_systemlog_logappend: true # Append to logpath instead of over-writing
 mongodb_systemlog_path: /var/log/mongodb/{{ mongodb_daemon_name }}.log # Log file to send write to instead of stdout
-
-## Pid
-mongodb_pidfile_path: "/var/run/mongodb/{{ mongodb_daemon_name }}.pid"
 
 ## replication Options
 mongodb_replication_replset: # Enable replication <setname>[/<optionalseedhostlist>]

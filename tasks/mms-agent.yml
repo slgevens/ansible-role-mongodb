@@ -13,7 +13,7 @@
 - name: Configure the MMS agent pt. 1
   file:
     state: directory
-    path: /etc/mongodb-mms
+    path: "{{ mongodb_conf_dir }}/mongodb-mms"
     owner: "{{ mongodb_user }}"
     group: "{{ mongodb_user }}"
     mode: 0755
@@ -21,7 +21,7 @@
 - name: Configure the MMS agent pt. 2
   template:
     src: monitoring-agent.config.j2
-    dest: /etc/mongodb-mms/monitoring-agent.config
+    dest: "{{ mongodb_conf_dir }}/mongodb-mms/monitoring-agent.config"
     owner: "{{ mongodb_user }}"
     group: "{{ mongodb_user }}"
     mode: 0644
