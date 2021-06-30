@@ -61,6 +61,14 @@
         and logfile_stat is defined
         and not logfile_stat.stat.exists )
 
+- name: Create mongodb config dir
+  file:
+    path: "{{ mongodb_conf_dir }}"
+    state: directory
+    owner: "{{ mongodb_user }}"
+    group: "{{ mongodb_user }}"
+    mode: 0755
+
 - name: Ensure dbpath directory
   file:
     path: "{{ mongodb_storage_dbpath }}"
