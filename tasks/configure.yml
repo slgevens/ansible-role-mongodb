@@ -61,6 +61,11 @@
         and logfile_stat is defined
         and not logfile_stat.stat.exists )
 
+- name: Delete default /etc/mongod.conf file
+  file:
+    path: /etc/mongod.conf
+    state: absent
+
 - name: Create mongodb config dir
   file:
     path: "{{ mongodb_conf_dir }}"
