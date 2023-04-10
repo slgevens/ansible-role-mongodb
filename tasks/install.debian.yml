@@ -1,41 +1,49 @@
 ---
-- name: Establish some role-related facts
-  set_fact:
-    mongodb_major_version: "{{ mongodb_version[0:3] }}"
+- block:
+  - name: Establish some role-related facts
+    set_fact:
+      mongodb_major_version: "{{ mongodb_version[0:3] }}"
 
-- name: Disable transparent huge pages on systemd systems
-  include_tasks: disable_transparent_hugepages.yml
-  when:
-    - mongodb_disable_transparent_hugepages | bool
-    - ansible_service_mgr == "systemd"
+  - name: Disable transparent huge pages on systemd systems
+    include_tasks: disable_transparent_hugepages.yml
+    when:
+      - mongodb_disable_transparent_hugepages | bool
+      - ansible_service_mgr == "systemd"
 
-- name: Add APT key
-  apt_key:
-    keyserver: "{{ mongodb_apt_keyserver }}"
-    id: "{{ mongodb_apt_key_id[mongodb_major_version] }}"
-  when: mongodb_package == 'mongodb-org'
+  - name: Add APT key
+    apt_key:
+      keyserver: "{{ mongodb_apt_keyserver }}"
+      id: "{{ mongodb_apt_key_id[mongodb_major_version] }}"
+    when: mongodb_package == 'mongodb-org'
 
-- name: Fail when used wrong mongodb_version variable
-  fail:
-    msg: "mongodb_version variable should be '3.6' or '4.0', '4.2' or '4.4'"
-  when: (mongodb_package == 'mongodb-org' and
-        (mongodb_version is not defined
-         or mongodb_repository[mongodb_major_version] is not defined))
+  - name: Fail when used wrong mongodb_version variable
+    fail:
+      msg: "mongodb_version variable should be '3.6' or '4.0', '4.2' or '4.4'"
+    when: (mongodb_package == 'mongodb-org' and
+          (mongodb_version is not defined
+          or mongodb_repository[mongodb_major_version] is not defined))
 
-- name: Add APT repository
-  apt_repository:
-    repo: "{{ mongodb_repository[version_item] }}"
-    update_cache: true
-  with_items: "{{ mongodb_major_version }}"
-  loop_control:
-    loop_var: version_item
-  when: mongodb_package == 'mongodb-org'
+  - name: Add APT repository
+    apt_repository:
+      repo: "{{ mongodb_repository[version_item] }}"
+      update_cache: true
+    with_items: "{{ mongodb_major_version }}"
+    loop_control:
+      loop_var: version_item
+    when: mongodb_package == 'mongodb-org'
 
-- name: Install MongoDB package
-  apt:
-    name: "{{ mongodb_package }}{% if (mongodb_version | length > 3) %}={{ mongodb_version }}{% endif %}"
-    state: "{{ mongodb_package_state }}"
-    update_cache: true
+  - name: Install MongoDB package
+    apt:
+      name: "{{ mongodb_package }}{% if (mongodb_version | length > 3) %}={{ mongodb_version }}{% endif %}"
+      state: "{{ mongodb_package_state }}"
+      update_cache: true
+  when: mongodb_use_apt | default(true) | bool
+
+- block:
+    - name: Install MongoDB .deb package
+      apt:
+        deb: "{{ mongodb_deb_package }}"
+  when: mongodb_use_deb | bool
 
 - name: Check if NUMA is available on host
   command: "ls -1 /proc/1/numa_maps"
