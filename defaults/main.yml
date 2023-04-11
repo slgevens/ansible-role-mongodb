@@ -1,5 +1,6 @@
 ---
-
+## to use APT package installation, set mongodb_use_apt: true (by default)
+mongodb_use_apt: true
 mongodb_package: mongodb-org
 mongodb_package_state: present
 mongodb_version: "4.4"
@@ -9,6 +10,10 @@ mongodb_apt_key_id:
   "4.0": "9DA31620334BD75D9DCB49F368818C72E52529D4"
   "4.2": "E162F504A20CDF15827F718D4B7C549A058F8B6B"
   "4.4": "20691eec35216c63caf66ce1656408e390cfb1f5"
+
+## to use .deb package installation, set mongodb_use_deb: true
+mongodb_use_deb: false
+mongodb_deb_package: https://repo.mongodb.org/apt/ubuntu/dists/focal/mongodb-org/4.4/multiverse/binary-arm64/mongodb-org-server_4.4.20_arm64.deb
 
 mongodb_pymongo_from_pip: true                   # Install latest PyMongo via PIP or package manager
 mongodb_pymongo_pip_version: 3.11.3
