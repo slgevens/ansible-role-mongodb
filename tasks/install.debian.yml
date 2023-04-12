@@ -42,7 +42,8 @@
 - block:
     - name: Install MongoDB .deb package
       apt:
-        deb: "{{ mongodb_deb_package }}"
+        deb: "{{ item }}"
+      with_items: "{{ mongodb_deb_packages }}"
   when: mongodb_use_deb | bool
 
 - name: Check if NUMA is available on host
