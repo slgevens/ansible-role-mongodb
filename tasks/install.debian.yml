@@ -40,6 +40,10 @@
   when: mongodb_use_apt | default(true) | bool
 
 - block:
+    - name: Small pause to avoid dpkg lock errors
+      pause:
+        seconds: 60
+
     - name: Install MongoDB .deb package
       apt:
         deb: "{{ item }}"
